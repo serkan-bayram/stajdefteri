@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PageSettings } from "./page-settings";
 import { PageContent } from "./page-content";
 
@@ -12,8 +12,12 @@ export type Page = {
   responsiblejobTitle: string;
 };
 
-export function Page({ localPage }: { localPage: Page }) {
-  const [page, setPage] = useState<Page>(localPage);
+export function Page({ pageData }: { pageData: Page }) {
+  const [page, setPage] = useState<Page>(pageData);
+
+  useEffect(() => {
+    setPage(pageData);
+  }, [pageData]);
 
   return (
     <>
