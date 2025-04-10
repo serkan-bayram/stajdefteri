@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 import { useState } from "react";
 import { Page } from "~/components/page";
 import { Button } from "~/components/ui/button";
-import { usePageCount } from "~/lib/data-hooks";
+import { defaultPageContent, useGetLocalPages } from "~/lib/data-hooks";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -31,7 +31,9 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Home({ actionData }: Route.ComponentProps) {
-  const { pageCount, setPageCount } = usePageCount();
+  // const { pages: localPages } = useGetLocalPages();
+
+  const [pages, setPages] = useState<Page[]>([]);
 
   return (
     <div className="min-h-screen space-y-4 p-8">
@@ -40,19 +42,34 @@ export default function Home({ actionData }: Route.ComponentProps) {
 
         <Button
           onClick={() => {
-            setPageCount((prev) => prev + 1);
-
-            localStorage.setItem("pageCount", JSON.stringify(pageCount));
+            setPages((prev) => [
+              ...prev,
+              {
+                ...defaultPageContent,
+                id: window.crypto.randomUUID(),
+              },
+            ]);
           }}
         >
           Sayfa Ekle
         </Button>
       </div>
 
-      <ul className="w-full space-y-4 flex flex-col-reverse">
-        {Array.from({ length: pageCount }).map((_, i) => (
-          <li key={i} className="flex gap-x-8">
-            <Page pageIndex={i} />
+      <ul className="w-full space-y-4 flex flex-col">
+        {pages.map((page) => (
+          <li key={page.id} className="flex gap-x-8">
+            <Page localPage={page} />
+            <Button
+              onClick={() => {
+                const newPages = pages.filter((p) => p.id !== page.id);
+
+                setPages(newPages);
+              }}
+              className="text-red-500"
+              variant={"link"}
+            >
+              Sayfayı Sil
+            </Button>
           </li>
         ))}
       </ul>

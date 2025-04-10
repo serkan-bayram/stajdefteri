@@ -1,47 +1,42 @@
 import { useEffect, useState } from "react";
-import type { PageContent } from "~/components/page";
+import type { Page } from "~/components/page";
 
-export function usePageCount() {
-  const [pageCount, setPageCount] = useState<number>(1);
-
-  useEffect(() => {
-    const savedCount = localStorage.getItem("pageCount");
-
-    if (savedCount) {
-      setPageCount(parseInt(savedCount));
-    }
-  }, []);
-
-  return { pageCount, setPageCount };
-}
-
-const defaultPageContent = {
+export const defaultPageContent: Page = {
+  id: "",
   job: "",
-  date: "",
+  date: new Date(),
   description: "",
   image: "",
   responsibleName: "",
   responsiblejobTitle: "",
 };
 
-export function usePageContent(pageIndex: number) {
-  const [pageContent, setPageContent] =
-    useState<PageContent>(defaultPageContent);
+export function useGetLocalPages() {
+  const [pages, setPages] = useState<Page[]>([]);
 
   useEffect(() => {
-    if (JSON.stringify(pageContent) === JSON.stringify(defaultPageContent))
-      return;
+    const keys = Object.keys(localStorage).filter((key) =>
+      key.startsWith("page_")
+    );
 
-    localStorage.setItem(`page-${pageIndex}`, JSON.stringify(pageContent));
-  }, [pageContent]);
+    const allPages = keys.map((key) =>
+      JSON.parse(localStorage.getItem(key)!)
+    ) as Page[];
 
-  useEffect(() => {
-    const saved = localStorage.getItem(`page-${pageIndex}`);
+    const sortedPages = allPages.sort(
+      (a, b) => a.date.getDate() - b.date.getDate()
+    );
 
-    if (saved) {
-      setPageContent(JSON.parse(saved));
-    }
+    setPages(sortedPages);
   }, []);
 
-  return { pageContent, setPageContent };
+  return { pages };
+}
+
+export function useSaveLocalPage(page: Page) {
+  useEffect(() => {
+    if (JSON.stringify(page) === JSON.stringify(defaultPageContent)) return;
+
+    localStorage.setItem(`page_${page.id}`, JSON.stringify(page));
+  }, [page]);
 }
