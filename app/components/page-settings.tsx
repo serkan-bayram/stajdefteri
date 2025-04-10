@@ -6,9 +6,11 @@ import type { PageContent } from "./page";
 
 export function PageSettings({
   pageIndex,
+  pageContent,
   setPageContent,
 }: {
   pageIndex: number;
+  pageContent: PageContent;
   setPageContent: Dispatch<SetStateAction<PageContent>>;
 }) {
   return (
@@ -19,6 +21,7 @@ export function PageSettings({
         <label>
           Yapılan iş (ana hatları ile):
           <Input
+            defaultValue={pageContent.job}
             onChange={(e) =>
               setPageContent((prev) => ({
                 ...prev,
@@ -33,6 +36,7 @@ export function PageSettings({
         <label>
           Açıklamalar:
           <Textarea
+            defaultValue={pageContent.description}
             onChange={(e) =>
               setPageContent((prev) => ({
                 ...prev,

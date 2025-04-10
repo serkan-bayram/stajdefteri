@@ -51,8 +51,8 @@ export default function Home({ actionData }: Route.ComponentProps) {
 
       <ul className="w-full space-y-4 flex flex-col-reverse">
         {Array.from({ length: pageCount }).map((_, i) => (
-          <li className="flex gap-x-8">
-            <Page key={i} pageIndex={i} />
+          <li key={i} className="flex gap-x-8">
+            <Page pageIndex={i} />
           </li>
         ))}
       </ul>
