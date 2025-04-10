@@ -1,7 +1,8 @@
-import { Page } from "~/components/page";
 import type { Route } from "./+types/home";
 import puppeteer from "puppeteer";
-import { Form, useSubmit } from "react-router";
+import { useState } from "react";
+import { Page } from "~/components/page";
+import { Button } from "~/components/ui/button";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -29,18 +30,29 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Home({ actionData }: Route.ComponentProps) {
-  return (
-    <div className="min-h-screen p-8 flex ">
-      <aside className="w-[400px]  bg-gray-100 sticky h-[400px]">
-        <Form action="/?index" className="" method="post">
-          <button type="submit">Submit</button>
-        </Form>
-      </aside>
+  const [pages, setPages] = useState(1);
 
-      <div className="flex-1 flex flex-col items-center">
-        <Page />
-        <Page />
+  return (
+    <div className="min-h-screen space-y-4 p-8">
+      <div className="h-[200px] p-4 bg-gray-50 shadow rounded-md border w-full">
+        <div className="font-semibold">Genel Ayarlar</div>
+
+        <Button
+          onClick={() => {
+            setPages((prev) => prev + 1);
+          }}
+        >
+          Sayfa Ekle
+        </Button>
       </div>
+
+      <ul className="w-full space-y-4 flex flex-col-reverse">
+        {Array.from({ length: pages }).map((_, i) => (
+          <li className="flex gap-x-8">
+            <Page key={i} />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
