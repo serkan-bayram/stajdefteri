@@ -5,12 +5,16 @@ import type { Dispatch, SetStateAction } from "react";
 import type { PageContent } from "./page";
 
 export function PageSettings({
+  pageIndex,
   setPageContent,
 }: {
+  pageIndex: number;
   setPageContent: Dispatch<SetStateAction<PageContent>>;
 }) {
   return (
     <aside className="w-1/3 bg-gray-50 p-4 border shadow rounded-md sticky top-4 h-[400px] ">
+      <div className="font-semibold">{pageIndex + 1}. Sayfa</div>
+
       <div className="w-2/3">
         <label>
           Yapılan iş (ana hatları ile):

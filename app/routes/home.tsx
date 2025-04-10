@@ -3,6 +3,7 @@ import puppeteer from "puppeteer";
 import { useState } from "react";
 import { Page } from "~/components/page";
 import { Button } from "~/components/ui/button";
+import { usePageCount } from "~/lib/data-hooks";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -30,7 +31,7 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Home({ actionData }: Route.ComponentProps) {
-  const [pages, setPages] = useState(1);
+  const { pageCount, setPageCount } = usePageCount();
 
   return (
     <div className="min-h-screen space-y-4 p-8">
@@ -39,7 +40,9 @@ export default function Home({ actionData }: Route.ComponentProps) {
 
         <Button
           onClick={() => {
-            setPages((prev) => prev + 1);
+            setPageCount((prev) => prev + 1);
+
+            localStorage.setItem("pageCount", JSON.stringify(pageCount));
           }}
         >
           Sayfa Ekle
@@ -47,9 +50,9 @@ export default function Home({ actionData }: Route.ComponentProps) {
       </div>
 
       <ul className="w-full space-y-4 flex flex-col-reverse">
-        {Array.from({ length: pages }).map((_, i) => (
+        {Array.from({ length: pageCount }).map((_, i) => (
           <li className="flex gap-x-8">
-            <Page key={i} />
+            <Page key={i} pageIndex={i} />
           </li>
         ))}
       </ul>

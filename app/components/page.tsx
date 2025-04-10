@@ -11,7 +11,7 @@ export type PageContent = {
   responsiblejobTitle: string;
 };
 
-export function Page() {
+export function Page({ pageIndex }: { pageIndex: number }) {
   const [pageContent, setPageContent] = useState<PageContent>({
     job: "",
     date: "",
@@ -23,7 +23,7 @@ export function Page() {
 
   return (
     <>
-      <PageSettings setPageContent={setPageContent} />
+      <PageSettings pageIndex={pageIndex} setPageContent={setPageContent} />
       <PageContent pageContent={pageContent} />
     </>
   );
