@@ -1,22 +1,19 @@
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { useRef, type Dispatch, type SetStateAction } from "react";
-import type { Page } from "./page";
+import { useRef } from "react";
 import { PhotoStorage } from "~/lib/photo-storage";
 import { Button } from "./ui/button";
+import type { Page } from "~/lib/types";
+import { useAppDispatch, useAppSelector } from "~/lib/store/store";
+import { deletePage, updatePage } from "~/lib/store/slices/reportSlice";
 
-export function PageSettings({
-  page,
-  setPage,
-  setPages,
-  pageIndex,
-}: {
-  page: Page;
-  setPage: Dispatch<SetStateAction<Page>>;
-  setPages: Dispatch<SetStateAction<Page[]>>;
-  pageIndex: number;
-}) {
+export function PageSettings({ page }: { page: Page }) {
   const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const dispatch = useAppDispatch();
+  const pageIndex = useAppSelector((state) =>
+    state.report.pages.findIndex((val) => val.id === page.id)
+  );
 
   return (
     <aside className="hide-on-print w-1/3 h-fit space-y-2 bg-gray-50 p-4 border shadow rounded-md sticky top-4 ">
@@ -24,9 +21,7 @@ export function PageSettings({
         <div className="font-semibold">{pageIndex + 1}. Sayfa</div>
         <Button
           onClick={() => {
-            setPages((prevValues) =>
-              prevValues.filter((val) => val.id !== page.id)
-            );
+            dispatch(deletePage({ pageId: page.id }));
           }}
           className="text-destructive"
           variant={"link"}
@@ -42,10 +37,12 @@ export function PageSettings({
             <Input
               defaultValue={page.job}
               onChange={(e) =>
-                setPage((prev) => ({
-                  ...prev,
-                  job: e.target.value,
-                }))
+                dispatch(
+                  updatePage({
+                    pageId: page.id,
+                    update: { job: e.target.value },
+                  })
+                )
               }
             />
           </label>
@@ -54,13 +51,15 @@ export function PageSettings({
           <label>
             Tarih:
             <Input
-              defaultValue={JSON.stringify(page.date)}
-              // onChange={(e) =>
-              //   setPageContent((prev) => ({
-              //     ...prev,
-              //     date: e.target.value,
-              //   }))
-              // }
+              defaultValue={page.date}
+              onChange={(e) =>
+                dispatch(
+                  updatePage({
+                    pageId: page.id,
+                    update: { date: e.target.value },
+                  })
+                )
+              }
             />
           </label>
         </div>
@@ -70,10 +69,12 @@ export function PageSettings({
             <Textarea
               defaultValue={page.description}
               onChange={(e) =>
-                setPage((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
+                dispatch(
+                  updatePage({
+                    pageId: page.id,
+                    update: { description: e.target.value },
+                  })
+                )
               }
             />
           </label>
@@ -104,11 +105,12 @@ export function PageSettings({
                   return;
                 }
 
-                setPage((prev) => ({
-                  ...prev,
-                  image: photoURL,
-                  imageId: photoId,
-                }));
+                dispatch(
+                  updatePage({
+                    pageId: page.id,
+                    update: { image: photoURL, imageId: photoId },
+                  })
+                );
               }}
             />
           </label>
@@ -122,11 +124,12 @@ export function PageSettings({
 
                 await storage.deletePhoto(page.imageId);
 
-                setPage((prev) => ({
-                  ...prev,
-                  image: "",
-                  imageId: "",
-                }));
+                dispatch(
+                  updatePage({
+                    pageId: page.id,
+                    update: { image: "", imageId: "" },
+                  })
+                );
 
                 if (imageInputRef.current) {
                   imageInputRef.current.value = "";

@@ -1,26 +1,11 @@
-import type { Dispatch, SetStateAction } from "react";
 import { Button } from "./ui/button";
-import type { Page } from "./page";
-import { defaultPageContent, useGetLocalPages } from "~/lib/data-hooks";
 import { Input } from "./ui/input";
-import { Form, useSubmit } from "react-router";
-import type { LocalData } from "~/routes/home";
+import { Form } from "react-router";
+import { useAppDispatch } from "~/lib/store/store";
+import { addPage, setGeneralSettings } from "~/lib/store/slices/reportSlice";
 
-export function GeneralSettings({
-  setPages,
-}: {
-  setPages: Dispatch<SetStateAction<Page[]>>;
-}) {
-  const submit = useSubmit();
-
-  const { pages } = useGetLocalPages();
-
-  const localPages = JSON.stringify(
-    pages.map((page) => ({
-      key: `page_${page.id}`,
-      value: page,
-    }))
-  );
+export function GeneralSettings() {
+  const dispatch = useAppDispatch();
 
   return (
     <div className="hide-on-print h-[200px] space-y-4 p-4 bg-gray-50 shadow rounded-md border w-full">
@@ -32,14 +17,9 @@ export function GeneralSettings({
               Öğrencinin Çalıştığı Bölüm
               <Input
                 onChange={(e) => {
-                  setPages((prevValues) => {
-                    const newPages = prevValues.map((value) => ({
-                      ...value,
-                      studentsField: e.target.value,
-                    }));
-
-                    return newPages;
-                  });
+                  dispatch(
+                    setGeneralSettings({ studentsField: e.target.value })
+                  );
                 }}
               />
             </label>
@@ -50,14 +30,9 @@ export function GeneralSettings({
               Onaylayan Yetkilinin Adı ve Soyadı
               <Input
                 onChange={(e) => {
-                  setPages((prevValues) => {
-                    const newPages = prevValues.map((value) => ({
-                      ...value,
-                      responsibleName: e.target.value,
-                    }));
-
-                    return newPages;
-                  });
+                  dispatch(
+                    setGeneralSettings({ responsibleName: e.target.value })
+                  );
                 }}
               />
             </label>
@@ -67,14 +42,9 @@ export function GeneralSettings({
               Onaylayan Yetkilinin Ünvanı
               <Input
                 onChange={(e) => {
-                  setPages((prevValues) => {
-                    const newPages = prevValues.map((value) => ({
-                      ...value,
-                      responsiblejobTitle: e.target.value,
-                    }));
-
-                    return newPages;
-                  });
+                  dispatch(
+                    setGeneralSettings({ responsibleJobTitle: e.target.value })
+                  );
                 }}
               />
             </label>
@@ -84,20 +54,14 @@ export function GeneralSettings({
         <div className="flex items-center gap-x-4 mt-auto">
           <Button
             onClick={() => {
-              setPages((prev) => [
-                ...prev,
-                {
-                  ...defaultPageContent,
-                  id: window.crypto.randomUUID(),
-                },
-              ]);
+              dispatch(addPage());
             }}
           >
             Sayfa Ekle
           </Button>
 
           <Form action="?index" method="post">
-            <input name="localData" value={localPages} hidden />
+            <input name="localData" value={""} hidden />
             <Button>PDF Olarak Kaydet</Button>
           </Form>
         </div>

@@ -1,9 +1,8 @@
 import type { Route } from "./+types/home";
 import puppeteer from "puppeteer";
-import { useEffect, useState } from "react";
 import { GeneralSettings } from "~/components/general-settings";
 import { Page } from "~/components/page";
-import { useGetLocalPages } from "~/lib/data-hooks";
+import { useAppSelector } from "~/lib/store/store";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -12,12 +11,12 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export type LocalData = {
-  pages: {
-    key: string;
-    value: Page;
-  }[];
-};
+// export type LocalData = {
+//   pages: {
+//     key: string;
+//     value: Page;
+//   }[];
+// };
 
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
@@ -64,22 +63,18 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 export default function Home({ actionData }: Route.ComponentProps) {
-  const { pages: localPages } = useGetLocalPages();
+  const pages = useAppSelector((state) => state.report.pages);
 
-  const [pages, setPages] = useState<Page[]>(localPages);
-
-  useEffect(() => {
-    setPages(localPages);
-  }, [localPages]);
+  console.log(pages);
 
   return (
     <div className="min-h-screen space-y-4 p-8">
-      <GeneralSettings setPages={setPages} />
+      <GeneralSettings />
 
       <ul className="w-full gap-y-4 flex flex-col-reverse">
-        {pages.map((page, i) => (
+        {pages.map((page) => (
           <li key={page.id} className="flex gap-x-8">
-            <Page pageData={page} pageIndex={i} setPages={setPages} />
+            <Page page={page} />
           </li>
         ))}
       </ul>
