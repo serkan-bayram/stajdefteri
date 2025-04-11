@@ -37,10 +37,11 @@ export default function Home({ actionData }: Route.ComponentProps) {
     <div className="min-h-screen space-y-4 p-8">
       <GeneralSettings setPages={setPages} />
 
-      <ul className="w-full space-y-4 flex flex-col">
-        {pages.map((page) => (
+      <ul className="w-full gap-y-4 flex flex-col-reverse">
+        {pages.map((page, i) => (
           <li key={page.id} className="flex gap-x-8">
-            <Page pageData={page} />
+            <Page pageData={page} pageIndex={i} />
+
             <Button
               onClick={() => {
                 const newPages = pages.filter((p) => p.id !== page.id);

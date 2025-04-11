@@ -32,27 +32,7 @@ export function PageContent({ page }: { page: Page }) {
           {page.description}
         </p>
 
-        {/* Swagger görüntüsü yerine temsilci kutu */}
-        <div className="border border-gray-300 mt-4 p-2 bg-gray-50">
-          <p className="text-center text-gray-600 text-sm">Swagger Görseli</p>
-          <div className="flex justify-between mt-2 text-xs">
-            <span className="bg-blue-200 px-2 py-1 rounded">
-              GET /api/entries
-            </span>
-            <span className="bg-green-200 px-2 py-1 rounded">
-              POST /api/entries
-            </span>
-            <span className="bg-blue-200 px-2 py-1 rounded">
-              GET /api/entries/{"{id}"}
-            </span>
-            <span className="bg-yellow-200 px-2 py-1 rounded">
-              PUT /api/entries/{"{id}"}
-            </span>
-            <span className="bg-red-200 px-2 py-1 rounded">
-              DELETE /api/entries/{"{id}"}
-            </span>
-          </div>
-        </div>
+        {page.image && <img src={page.image} />}
       </div>
 
       {/* Onay kısmı */}

@@ -3,17 +3,20 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import type { Dispatch, SetStateAction } from "react";
 import type { Page } from "./page";
+import { PhotoStorage } from "~/lib/photo-storage";
 
 export function PageSettings({
   page,
   setPage,
+  pageIndex,
 }: {
   page: Page;
   setPage: Dispatch<SetStateAction<Page>>;
+  pageIndex: number;
 }) {
   return (
     <aside className="w-1/3 h-fit space-y-2 bg-gray-50 p-4 border shadow rounded-md sticky top-4 ">
-      <div className="font-semibold">{page.id}</div>
+      <div className="font-semibold">{pageIndex + 1}. Sayfa</div>
 
       <div className="space-y-4">
         <div className="w-full">
@@ -62,7 +65,30 @@ export function PageSettings({
         <div className="w-full">
           <label>
             Resim:
-            <Input type="file" />
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={async (e) => {
+                if (!e.target.files) return;
+
+                const { files } = e.target;
+
+                const storage = new PhotoStorage();
+
+                const photoId = window.crypto.randomUUID();
+
+                await storage.savePhoto(photoId, files[0]);
+
+                const photoURL = await storage.loadPhotoURL(photoId);
+
+                if (!photoURL) {
+                  console.log("Can't save photo.");
+                  return;
+                }
+
+                setPage((prev) => ({ ...prev, image: photoURL }));
+              }}
+            />
           </label>
         </div>
       </div>

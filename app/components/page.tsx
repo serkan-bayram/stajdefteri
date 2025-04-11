@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { PageSettings } from "./page-settings";
 import { PageContent } from "./page-content";
 
@@ -12,7 +12,13 @@ export type Page = {
   responsiblejobTitle: string;
 };
 
-export function Page({ pageData }: { pageData: Page }) {
+export const Page = memo(function Page({
+  pageData,
+  pageIndex,
+}: {
+  pageData: Page;
+  pageIndex: number;
+}) {
   const [page, setPage] = useState<Page>(pageData);
 
   useEffect(() => {
@@ -21,8 +27,8 @@ export function Page({ pageData }: { pageData: Page }) {
 
   return (
     <>
-      <PageSettings page={page} setPage={setPage} />
+      <PageSettings page={page} setPage={setPage} pageIndex={pageIndex} />
       <PageContent page={page} />
     </>
   );
-}
+});
