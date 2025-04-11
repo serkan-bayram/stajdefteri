@@ -2,7 +2,7 @@ import type { Page } from "./page";
 
 export function PageContent({ page }: { page: Page }) {
   return (
-    <div className="flex-shrink-0 print-page flex flex-col pb-18 w-[730px] h-[900px] border border-black p-6 text-sm bg-white">
+    <div className=" flex-shrink-0 print-page flex flex-col pb-18 w-[730px] h-[900px] border border-black p-6 text-sm bg-white">
       <div className="text-center font-semibold text-lg border-b border-black pb-2 mb-4">
         İŞLETMEDE MESLEKİ EĞİTİM DERSİ RAPOR DEFTERİ
       </div>
@@ -11,7 +11,7 @@ export function PageContent({ page }: { page: Page }) {
       <div className="space-y-2 mb-4">
         <p>
           <span className="font-semibold">Öğrencinin çalıştığı bölüm:</span>{" "}
-          <span className="underline"> Yazılım Geliştirme </span>
+          <span className="underline"> {page.studentsField} </span>
         </p>
         <p>
           <span className="font-semibold">Yapılan iş (ana hatları ile):</span>{" "}
@@ -26,8 +26,8 @@ export function PageContent({ page }: { page: Page }) {
       </div>
 
       {/* Açıklamalar */}
-      <div className="border border-black p-4 mb-6 flex-1">
-        <p className="break-all">
+      <div className="border border-black p-4 mb-6 flex-1 flex flex-col">
+        <p className="break-all flex-1">
           <span className="font-semibold underline">Açıklamalar:</span>{" "}
           {page.description}
         </p>

@@ -1,4 +1,3 @@
-import { Form } from "react-router";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useRef, type Dispatch, type SetStateAction } from "react";
@@ -9,17 +8,32 @@ import { Button } from "./ui/button";
 export function PageSettings({
   page,
   setPage,
+  setPages,
   pageIndex,
 }: {
   page: Page;
   setPage: Dispatch<SetStateAction<Page>>;
+  setPages: Dispatch<SetStateAction<Page[]>>;
   pageIndex: number;
 }) {
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <aside className="w-1/3 h-fit space-y-2 bg-gray-50 p-4 border shadow rounded-md sticky top-4 ">
-      <div className="font-semibold">{pageIndex + 1}. Sayfa</div>
+    <aside className="hide-on-print w-1/3 h-fit space-y-2 bg-gray-50 p-4 border shadow rounded-md sticky top-4 ">
+      <div className="flex items-center justify-between">
+        <div className="font-semibold">{pageIndex + 1}. Sayfa</div>
+        <Button
+          onClick={() => {
+            setPages((prevValues) =>
+              prevValues.filter((val) => val.id !== page.id)
+            );
+          }}
+          className="text-destructive"
+          variant={"link"}
+        >
+          Sayfayı Sil
+        </Button>
+      </div>
 
       <div className="space-y-4">
         <div className="w-full">
@@ -101,7 +115,8 @@ export function PageSettings({
 
           {page.imageId && (
             <Button
-              variant={"destructive"}
+              variant={"link"}
+              className="text-destructive"
               onClick={async () => {
                 const storage = new PhotoStorage();
 

@@ -10,6 +10,7 @@ export const defaultPageContent: Page = {
   imageId: "",
   responsibleName: "",
   responsiblejobTitle: "",
+  studentsField: "",
 };
 
 export function useGetLocalPages() {
@@ -24,11 +25,7 @@ export function useGetLocalPages() {
       JSON.parse(localStorage.getItem(key)!)
     ) as Page[];
 
-    const sortedPages = allPages.sort(
-      (a, b) => a.date.getDate() - b.date.getDate()
-    );
-
-    setPages(sortedPages);
+    setPages(allPages);
   }, []);
 
   return { pages };

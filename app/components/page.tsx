@@ -1,6 +1,7 @@
-import { memo, useEffect, useState } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { PageSettings } from "./page-settings";
 import { PageContent } from "./page-content";
+import { useSaveLocalPage } from "~/lib/data-hooks";
 
 export type Page = {
   id: string;
@@ -11,14 +12,17 @@ export type Page = {
   imageId: string;
   responsibleName: string;
   responsiblejobTitle: string;
+  studentsField: string;
 };
 
-export const Page = memo(function Page({
+export function Page({
   pageData,
   pageIndex,
+  setPages,
 }: {
   pageData: Page;
   pageIndex: number;
+  setPages: Dispatch<SetStateAction<Page[]>>;
 }) {
   const [page, setPage] = useState<Page>(pageData);
 
@@ -26,10 +30,17 @@ export const Page = memo(function Page({
     setPage(pageData);
   }, [pageData]);
 
+  useSaveLocalPage(page);
+
   return (
     <>
-      <PageSettings page={page} setPage={setPage} pageIndex={pageIndex} />
+      <PageSettings
+        page={page}
+        setPage={setPage}
+        pageIndex={pageIndex}
+        setPages={setPages}
+      />
       <PageContent page={page} />
     </>
   );
-});
+}
