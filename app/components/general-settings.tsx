@@ -1,8 +1,11 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Form } from "react-router";
-import { store, useAppDispatch } from "~/lib/store/store";
-import { addPage, setGeneralSettings } from "~/lib/store/slices/reportSlice";
+import { useAppDispatch } from "~/lib/store/store";
+import {
+  addPage,
+  saveAsPDF,
+  setGeneralSettings,
+} from "~/lib/store/slices/reportSlice";
 
 export function GeneralSettings() {
   const dispatch = useAppDispatch();
@@ -68,16 +71,16 @@ export function GeneralSettings() {
 }
 
 function SaveAsPDF() {
-  const state = store.getState().report;
+  const dispatch = useAppDispatch();
 
   return (
-    <Form action="?index" method="post">
-      <input
-        name="reportState"
-        defaultValue={JSON.stringify(state)}
-        type="hidden"
-      />
-      <Button>PDF Olarak Kaydet</Button>
-    </Form>
+    <Button
+      type="button"
+      onClick={() => {
+        dispatch(saveAsPDF());
+      }}
+    >
+      PDF Olarak Kaydet
+    </Button>
   );
 }

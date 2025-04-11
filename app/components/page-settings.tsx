@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import type { Page } from "~/lib/types";
 import { useAppDispatch, useAppSelector } from "~/lib/store/store";
 import { deletePage, updatePage } from "~/lib/store/slices/reportSlice";
+import { nanoid } from "@reduxjs/toolkit";
 
 export function PageSettings({ page }: { page: Page }) {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -94,7 +95,7 @@ export function PageSettings({ page }: { page: Page }) {
 
                 const storage = new PhotoStorage();
 
-                const photoId = window.crypto.randomUUID();
+                const photoId = nanoid();
 
                 await storage.savePhoto(photoId, files[0]);
 

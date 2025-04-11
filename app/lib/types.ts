@@ -17,3 +17,8 @@ export interface ReportState {
   generalSettings: GeneralSettings;
   pages: Page[];
 }
+
+export interface Image {
+  id: string;
+  file: File;
+}

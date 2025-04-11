@@ -1,5 +1,7 @@
 // ~/lib/localStorage.ts
 export const loadState = () => {
+  if (typeof window === "undefined") return undefined;
+
   try {
     const serializedState = localStorage.getItem("reportState");
     if (serializedState === null) return undefined;
@@ -11,6 +13,8 @@ export const loadState = () => {
 };
 
 export const saveState = (state: any) => {
+  if (typeof window === "undefined") return undefined;
+
   try {
     const serializedState = JSON.stringify(state);
     localStorage.setItem("reportState", serializedState);

@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import type { Route } from "./+types/home";
 import puppeteer from "puppeteer";
 import { GeneralSettings } from "~/components/general-settings";
 import { Page } from "~/components/page";
-import { useAppSelector } from "~/lib/store/store";
+import { useAppDispatch, useAppSelector } from "~/lib/store/store";
+import { syncFromLocalStorage } from "~/lib/store/slices/reportSlice";
+import { PhotoStorage } from "~/lib/photo-storage";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -17,7 +20,7 @@ export async function action({ request }: Route.ActionArgs) {
   const reportState = formData.get("reportState");
 
   if (!reportState) {
-    console.error("No reportState is loaded.");
+    console.error("No reportState or images is loaded.");
     return;
   }
 
@@ -54,6 +57,12 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Home({ actionData }: Route.ComponentProps) {
   const pages = useAppSelector((state) => state.report.pages);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(syncFromLocalStorage());
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen space-y-4 p-8">

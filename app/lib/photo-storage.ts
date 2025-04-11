@@ -79,4 +79,37 @@ export class PhotoStorage {
       };
     });
   }
+
+  // Yeni fonksiyon: Birden fazla ID'yi kullanarak kayıtları JSON formatında döndürme
+  async loadPhotosByIds(ids: string[]): Promise<any[]> {
+    const db = await this.openDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(this.storeName, "readonly");
+      const store = tx.objectStore(this.storeName);
+      const results: any[] = [];
+      let count = 0;
+
+      // ID dizisini her birine karşılık gelen kayıtları çekmek için kullanıyoruz
+      ids.forEach((id) => {
+        const request = store.get(id);
+        request.onsuccess = () => {
+          const result = request.result;
+          if (result) {
+            results.push(result);
+          }
+          count++;
+
+          // Tüm istekler tamamlandığında sonuçları döndür
+          if (count === ids.length) {
+            db.close();
+            resolve(results);
+          }
+        };
+        request.onerror = () => {
+          db.close();
+          reject(request.error);
+        };
+      });
+    });
+  }
 }

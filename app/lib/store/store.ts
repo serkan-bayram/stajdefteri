@@ -1,17 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import reportSlice from "./slices/reportSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { loadState, saveState } from "../local-storage";
-
-const preloadedState = {
-  report: loadState() || undefined,
-};
+import { saveState } from "../local-storage";
 
 export const store = configureStore({
   reducer: {
     report: reportSlice,
   },
-  preloadedState,
 });
 
 store.subscribe(() => {
