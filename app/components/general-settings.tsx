@@ -1,7 +1,7 @@
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Form } from "react-router";
-import { useAppDispatch } from "~/lib/store/store";
+import { store, useAppDispatch } from "~/lib/store/store";
 import { addPage, setGeneralSettings } from "~/lib/store/slices/reportSlice";
 
 export function GeneralSettings() {
@@ -60,12 +60,24 @@ export function GeneralSettings() {
             Sayfa Ekle
           </Button>
 
-          <Form action="?index" method="post">
-            <input name="localData" value={""} hidden />
-            <Button>PDF Olarak Kaydet</Button>
-          </Form>
+          <SaveAsPDF />
         </div>
       </div>
     </div>
+  );
+}
+
+function SaveAsPDF() {
+  const state = store.getState().report;
+
+  return (
+    <Form action="?index" method="post">
+      <input
+        name="reportState"
+        defaultValue={JSON.stringify(state)}
+        type="hidden"
+      />
+      <Button>PDF Olarak Kaydet</Button>
+    </Form>
   );
 }

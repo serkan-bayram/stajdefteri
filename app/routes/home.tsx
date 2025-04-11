@@ -11,34 +11,28 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// export type LocalData = {
-//   pages: {
-//     key: string;
-//     value: Page;
-//   }[];
-// };
-
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
 
-  if (!formData.get("localData")) return;
+  const reportState = formData.get("reportState");
 
-  const browser = await puppeteer.launch({ headless: false });
+  if (!reportState) {
+    console.error("No reportState is loaded.");
+    return;
+  }
+
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
+
   await page.goto("http://localhost:5173/", {
     waitUntil: "networkidle0",
   });
 
-  // LocalStorage verisini ayarla
-  for (const item of JSON.parse(formData.get("localData") as any)) {
-    await page.evaluate(
-      (key, value) => {
-        localStorage.setItem(key, JSON.stringify(value));
-      },
-      item.key,
-      item.value
-    );
-  }
+  await page.evaluate((reportState) => {
+    localStorage.setItem("reportState", reportState.toString());
+  }, reportState);
+
+  await page.reload();
 
   await page.addStyleTag({
     content: `
@@ -47,10 +41,6 @@ export async function action({ request }: Route.ActionArgs) {
       }
     `,
   });
-
-  await new Promise((resolve) => setTimeout(resolve, 12000));
-
-  await page.screenshot({ path: "./screenshot.jpg" });
 
   const pdf = await page.pdf({
     format: "A4",
@@ -64,8 +54,6 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function Home({ actionData }: Route.ComponentProps) {
   const pages = useAppSelector((state) => state.report.pages);
-
-  console.log(pages);
 
   return (
     <div className="min-h-screen space-y-4 p-8">
