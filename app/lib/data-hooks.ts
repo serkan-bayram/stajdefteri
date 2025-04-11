@@ -6,7 +6,8 @@ export const defaultPageContent: Page = {
   job: "",
   date: new Date(),
   description: "",
-  image: undefined,
+  image: "",
+  imageId: "",
   responsibleName: "",
   responsiblejobTitle: "",
 };

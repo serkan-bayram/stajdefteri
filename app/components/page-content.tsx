@@ -32,7 +32,7 @@ export function PageContent({ page }: { page: Page }) {
           {page.description}
         </p>
 
-        {page.image && <img src={page.image} />}
+        {page.image && <img src={page.image} className="h-[300px] mx-auto" />}
       </div>
 
       {/* Onay kısmı */}

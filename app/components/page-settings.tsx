@@ -1,9 +1,10 @@
 import { Form } from "react-router";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import type { Dispatch, SetStateAction } from "react";
+import { useRef, type Dispatch, type SetStateAction } from "react";
 import type { Page } from "./page";
 import { PhotoStorage } from "~/lib/photo-storage";
+import { Button } from "./ui/button";
 
 export function PageSettings({
   page,
@@ -14,6 +15,8 @@ export function PageSettings({
   setPage: Dispatch<SetStateAction<Page>>;
   pageIndex: number;
 }) {
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <aside className="w-1/3 h-fit space-y-2 bg-gray-50 p-4 border shadow rounded-md sticky top-4 ">
       <div className="font-semibold">{pageIndex + 1}. Sayfa</div>
@@ -62,10 +65,11 @@ export function PageSettings({
           </label>
         </div>
 
-        <div className="w-full">
+        <div className="w-full flex items-end gap-x-4">
           <label>
             Resim:
             <Input
+              ref={imageInputRef}
               type="file"
               accept="image/*"
               onChange={async (e) => {
@@ -86,10 +90,37 @@ export function PageSettings({
                   return;
                 }
 
-                setPage((prev) => ({ ...prev, image: photoURL }));
+                setPage((prev) => ({
+                  ...prev,
+                  image: photoURL,
+                  imageId: photoId,
+                }));
               }}
             />
           </label>
+
+          {page.imageId && (
+            <Button
+              variant={"destructive"}
+              onClick={async () => {
+                const storage = new PhotoStorage();
+
+                await storage.deletePhoto(page.imageId);
+
+                setPage((prev) => ({
+                  ...prev,
+                  image: "",
+                  imageId: "",
+                }));
+
+                if (imageInputRef.current) {
+                  imageInputRef.current.value = "";
+                }
+              }}
+            >
+              Resmi Sil
+            </Button>
+          )}
         </div>
       </div>
     </aside>

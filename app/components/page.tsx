@@ -8,6 +8,7 @@ export type Page = {
   date: Date;
   description: string;
   image: string;
+  imageId: string;
   responsibleName: string;
   responsiblejobTitle: string;
 };
