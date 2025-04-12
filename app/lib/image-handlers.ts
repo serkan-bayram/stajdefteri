@@ -41,6 +41,8 @@ export async function action({ request }: Route.ActionArgs) {
     args: ["--disable-dev-shm-usage", "--no-sandbox"],
   });
 
+  await new Promise((res) => setTimeout(res, 3000));
+
   console.log("New page...");
 
   const page = await browser.newPage();
