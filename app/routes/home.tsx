@@ -12,8 +12,11 @@ import type { Image } from "~/lib/types";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "Staj Defteri" },
+    {
+      name: "description",
+      content: "Staj defterinizi kolayca yönetebileceğiniz bir uygulama.",
+    },
   ];
 }
 
@@ -160,8 +163,13 @@ export async function action({ request }: Route.ActionArgs) {
       .hide-on-print {
         display: none !important;
       }
+      .reverse-on-print {
+        flex-direction: column !important;
+      }
     `,
   });
+
+  // await new Promise((res) => setTimeout(res, 10000000));
 
   const pdf = await page.pdf({
     format: "A4",
@@ -187,7 +195,7 @@ export default function Home({ actionData }: Route.ComponentProps) {
     <div className="min-h-screen space-y-4 p-8">
       <GeneralSettings />
 
-      <ul className="w-full gap-y-4 flex flex-col-reverse">
+      <ul className="w-full gap-y-4 flex flex-col-reverse reverse-on-print">
         {pages.map((page) => (
           <li key={page.id} className="flex gap-x-8">
             <Page page={page} />
