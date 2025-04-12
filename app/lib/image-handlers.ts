@@ -174,6 +174,8 @@ export async function action({ request }: Route.ActionArgs) {
     waitUntil: "networkidle0",
   });
 
+  await new Promise((res) => setTimeout(res, 3000));
+
   await page.addStyleTag({
     content: `
       .hide-on-print {
@@ -186,8 +188,6 @@ export async function action({ request }: Route.ActionArgs) {
   });
 
   console.log("Create PDF...");
-
-  // await new Promise((res) => setTimeout(res, 10000000));
 
   const pdf = await page.pdf({
     format: "A4",
