@@ -4,7 +4,7 @@ import { ImageStorage } from "~/lib/image-storage";
 import type { Image, GeneralSettings, Page, ReportState } from "~/lib/types";
 import type { RootState } from "../store";
 import { loadState } from "~/lib/local-storage";
-import { toBase64 } from "~/lib/file-to-base64";
+import { base64ToFile, toBase64 } from "~/lib/file-to-base64";
 
 const initialPage: Page = {
   id: "",
@@ -31,28 +31,36 @@ export const saveAsPDF = createAsyncThunk(
     try {
       const state = getState() as RootState;
 
-      const storage = new ImageStorage();
+      // const storage = new ImageStorage();
 
-      const imageIds = state.report.pages.map((page) => page.imageId);
+      // const imageIds = state.report.pages.map((page) => page.imageId);
 
-      const images = (await storage.loadImagesById(imageIds)) as Image[];
+      // const images = (await storage.loadImagesById(imageIds)) as Image[];
 
-      const imagesFormData = new FormData();
+      // const imagesFormData = new FormData();
 
-      // images.forEach((image) => {
-      //   imagesFormData.set(image.id, image.file);
+      // // images.forEach((image) => {
+      // //   imagesFormData.set(image.id, image.file);
+      // // });
+
+      // await fetch("/api/image-handlers", {
+      //   method: "POST",
+      //   body: imagesFormData,
       // });
-
-      await fetch("/api/image-handlers", {
-        method: "POST",
-        body: imagesFormData,
-      });
-
-      return;
 
       const formData = new FormData();
 
-      formData.set("reportState", JSON.stringify(state.report));
+      formData.set(
+        "reportState",
+        JSON.stringify({ ...state.report, images: [] })
+      );
+
+      const { images } = state.report;
+
+      for (const image of images) {
+        const fileObject = base64ToFile(image.buffer, image.id);
+        formData.set(image.id, fileObject);
+      }
 
       await fetch("?index", {
         method: "POST",
