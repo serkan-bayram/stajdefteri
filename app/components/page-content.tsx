@@ -15,7 +15,7 @@ export function PageContent({ page }: { page: Page }) {
   );
 
   return (
-    <div className=" flex-shrink-0 print-page flex flex-col pb-18 w-[730px] h-[900px] border border-black p-6 text-sm bg-white">
+    <div className=" flex-shrink-0 print-page flex flex-col pb-18 md:w-[730px] h-[900px] border border-black p-6 text-sm bg-white">
       <div className="text-center relative font-semibold text-lg pb-4">
         {generalSettings.reportTitle}
 

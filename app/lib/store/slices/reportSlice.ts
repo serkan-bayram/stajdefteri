@@ -93,6 +93,11 @@ export const reportSlice = createSlice({
   initialState,
   reducers: {
     syncFromLocalStorage: (state) => {
+      localStorage.setItem(
+        "!!!!!!!!!___UYARI___!!!!!!!!!",
+        "Buradaki değerlerle oynamak veri kaybına yol açabilir."
+      );
+
       const localState = loadState() as ReportState | undefined;
 
       if (!localState) return;

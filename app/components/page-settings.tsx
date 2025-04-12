@@ -22,7 +22,7 @@ export function PageSettings({ page }: { page: Page }) {
   );
 
   return (
-    <aside className="hide-on-print w-1/3 h-fit space-y-2 bg-gray-50 p-4 border shadow rounded-md sticky top-4 ">
+    <aside className="hide-on-print md:w-1/3 h-fit space-y-2 bg-gray-50 p-4 border shadow rounded-md md:sticky top-4 ">
       <div className="flex items-center justify-between">
         <div className="font-semibold">{pageIndex + 1}. Sayfa</div>
         <Button

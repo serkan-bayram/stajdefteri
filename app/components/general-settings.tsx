@@ -15,10 +15,10 @@ export function GeneralSettings() {
   );
 
   return (
-    <div className="hide-on-print h-[200px] space-y-4 p-4 bg-gray-50 shadow rounded-md border w-full">
+    <div className="hide-on-print  space-y-4 p-4 bg-gray-50 shadow rounded-md border w-full">
       <div className="font-semibold">Genel Ayarlar</div>
       <div className="space-y-6">
-        <div className="flex items-center  gap-x-4">
+        <div className="flex items-center flex-wrap gap-y-8  gap-x-4">
           <div className="max-w-[300px]">
             <label>
               Rapor Başlığı
@@ -72,7 +72,7 @@ export function GeneralSettings() {
           </div>
         </div>
 
-        <div className="flex items-center gap-x-4 mt-auto">
+        <div className="flex items-center gap-x-4 mt-auto flex-wrap gap-y-4">
           <Button
             onClick={() => {
               dispatch(addPage());
