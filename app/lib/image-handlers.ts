@@ -53,7 +53,9 @@ export async function action({ request }: Route.ActionArgs) {
 
   console.log("Goto: ", siteURL);
 
-  await page.goto(siteURL);
+  await page.goto(siteURL, {
+    waitUntil: "networkidle0",
+  });
 
   console.log("Evaluate...");
 
