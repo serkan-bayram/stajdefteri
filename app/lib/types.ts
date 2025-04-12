@@ -2,6 +2,7 @@ export interface GeneralSettings {
   studentsField: string;
   responsibleName: string;
   responsibleJobTitle: string;
+  reportTitle: string;
 }
 
 export interface Page {

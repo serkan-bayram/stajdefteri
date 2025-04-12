@@ -4,7 +4,7 @@ import { ImageStorage } from "~/lib/image-storage";
 import type { Image, GeneralSettings, Page, ReportState } from "~/lib/types";
 import type { RootState } from "../store";
 import { loadState } from "~/lib/local-storage";
-import { base64ToFile, toBase64 } from "~/lib/file-to-base64";
+import { base64ToFile } from "~/lib/file-to-base64";
 
 const initialPage: Page = {
   id: "",
@@ -20,6 +20,7 @@ const initialState: ReportState = {
     studentsField: "",
     responsibleName: "",
     responsibleJobTitle: "",
+    reportTitle: "Rapor",
   },
   pages: [],
   images: [],
@@ -30,23 +31,6 @@ export const saveAsPDF = createAsyncThunk(
   async (undefined, { getState }) => {
     try {
       const state = getState() as RootState;
-
-      // const storage = new ImageStorage();
-
-      // const imageIds = state.report.pages.map((page) => page.imageId);
-
-      // const images = (await storage.loadImagesById(imageIds)) as Image[];
-
-      // const imagesFormData = new FormData();
-
-      // // images.forEach((image) => {
-      // //   imagesFormData.set(image.id, image.file);
-      // // });
-
-      // await fetch("/api/image-handlers", {
-      //   method: "POST",
-      //   body: imagesFormData,
-      // });
 
       const formData = new FormData();
 
