@@ -10,25 +10,37 @@ export function PageContent({ page }: { page: Page }) {
     state.report.images.find((val) => val.id === page.imageId)
   );
 
+  const pageIndex = useAppSelector((state) =>
+    state.report.pages.findIndex((p) => p.id === page.id)
+  );
+
   return (
     <div className=" flex-shrink-0 print-page flex flex-col pb-18 w-[730px] h-[900px] border border-black p-6 text-sm bg-white">
-      <div className="text-center font-semibold text-lg border-b border-black pb-2 mb-4">
+      <div className="text-center relative font-semibold text-lg pb-4">
         {generalSettings.reportTitle}
+
+        <div className="absolute font-normal text-sm right-0 top-1/2 -translate-y-1/2">
+          Sayfa No. {pageIndex + 1}
+        </div>
       </div>
 
       {/* Bilgi alanları */}
-      <div className="space-y-2 mb-4">
-        <p>
-          <span className="font-semibold">Öğrencinin çalıştığı bölüm:</span>{" "}
-          <span className="underline"> {generalSettings.studentsField} </span>
+      <div className="border space-y-2 mb-4 border-black">
+        <p className="p-1">
+          <span className="font-semibold underline">
+            Öğrencinin çalıştığı bölüm:
+          </span>{" "}
+          <span> {generalSettings.studentsField} </span>
         </p>
-        <p>
-          <span className="font-semibold">Yapılan iş (ana hatları ile):</span>{" "}
-          <span className="underline"> {page.job} </span>
+        <p className="p-1">
+          <span className="font-semibold underline">
+            Yapılan iş (ana hatları ile):
+          </span>{" "}
+          <span> {page.job} </span>
         </p>
-        <p>
-          <span className="font-semibold">Tarih:</span>{" "}
-          <span className="underline">{page.date}</span>
+        <p className="p-1 border-t border-black ">
+          <span className="font-semibold underline">Tarih:</span>{" "}
+          <span>{page.date}</span>
         </p>
       </div>
 

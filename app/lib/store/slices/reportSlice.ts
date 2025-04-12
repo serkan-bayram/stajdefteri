@@ -24,6 +24,7 @@ const initialState: ReportState = {
   },
   pages: [],
   images: [],
+  isSavingPDF: false,
 };
 
 export const saveAsPDF = createAsyncThunk(
@@ -46,9 +47,22 @@ export const saveAsPDF = createAsyncThunk(
         formData.set(image.id, fileObject);
       }
 
-      await fetch("?index", {
+      await fetch("/api/image-handlers", {
         method: "POST",
         body: formData,
+      }).then(async (res) => {
+        if (!res.ok) throw new Error("PDF response failed");
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "staj-defteri.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
       });
     } catch (error) {
       console.error("Error saving pdf:", error);
@@ -123,6 +137,15 @@ export const reportSlice = createSlice({
     addImage: (state, action: PayloadAction<{ image: Image }>) => {
       state.images.push(action.payload.image);
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(saveAsPDF.fulfilled, (state) => {
+      state.isSavingPDF = false;
+    });
+
+    builder.addCase(saveAsPDF.pending, (state) => {
+      state.isSavingPDF = true;
+    });
   },
 });
 

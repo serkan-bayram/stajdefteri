@@ -23,4 +23,5 @@ export interface ReportState {
   generalSettings: GeneralSettings;
   pages: Page[];
   images: Image[];
+  isSavingPDF: boolean;
 }
