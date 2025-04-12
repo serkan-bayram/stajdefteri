@@ -170,7 +170,9 @@ export async function action({ request }: Route.ActionArgs) {
 
   console.log("Reload...");
 
-  await page.reload();
+  await page.reload({
+    waitUntil: "networkidle0",
+  });
 
   await page.addStyleTag({
     content: `
