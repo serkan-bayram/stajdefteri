@@ -13,12 +13,13 @@ export interface Page {
   imageId: string;
 }
 
+export interface Image {
+  id: string;
+  buffer: string;
+}
+
 export interface ReportState {
   generalSettings: GeneralSettings;
   pages: Page[];
-}
-
-export interface Image {
-  id: string;
-  file: File;
+  images: Image[];
 }

@@ -6,6 +6,10 @@ export function PageContent({ page }: { page: Page }) {
     (state) => state.report.generalSettings
   );
 
+  const image = useAppSelector((state) =>
+    state.report.images.find((val) => val.id === page.imageId)
+  );
+
   return (
     <div className=" flex-shrink-0 print-page flex flex-col pb-18 w-[730px] h-[900px] border border-black p-6 text-sm bg-white">
       <div className="text-center font-semibold text-lg border-b border-black pb-2 mb-4">
@@ -35,7 +39,7 @@ export function PageContent({ page }: { page: Page }) {
           {page.description}
         </p>
 
-        {page.image && <img src={page.image} className="h-[300px] mx-auto" />}
+        {image && <img src={image.buffer} className="h-[300px] mx-auto" />}
       </div>
 
       {/* Onay kısmı */}

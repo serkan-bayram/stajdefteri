@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice, nanoid } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { PhotoStorage } from "~/lib/photo-storage";
-import type { GeneralSettings, Page, ReportState } from "~/lib/types";
+import { ImageStorage } from "~/lib/image-storage";
+import type { Image, GeneralSettings, Page, ReportState } from "~/lib/types";
 import type { RootState } from "../store";
 import { loadState } from "~/lib/local-storage";
+import { toBase64 } from "~/lib/file-to-base64";
 
 const initialPage: Page = {
   id: "",
@@ -21,6 +22,7 @@ const initialState: ReportState = {
     responsibleJobTitle: "",
   },
   pages: [],
+  images: [],
 };
 
 export const saveAsPDF = createAsyncThunk(
@@ -29,26 +31,27 @@ export const saveAsPDF = createAsyncThunk(
     try {
       const state = getState() as RootState;
 
+      const storage = new ImageStorage();
+
       const imageIds = state.report.pages.map((page) => page.imageId);
 
-      const photoStorage = new PhotoStorage();
-      const photos = await photoStorage.loadPhotosByIds(imageIds);
+      const images = (await storage.loadImagesById(imageIds)) as Image[];
+
+      const imagesFormData = new FormData();
+
+      // images.forEach((image) => {
+      //   imagesFormData.set(image.id, image.file);
+      // });
+
+      await fetch("/api/image-handlers", {
+        method: "POST",
+        body: imagesFormData,
+      });
+
+      return;
 
       const formData = new FormData();
 
-      const images = photos.map((photo) => {
-        var newObject = {
-          lastModified: photo.file.lastModified,
-          lastModifiedDate: photo.file.lastModifiedDate,
-          name: photo.file.name,
-          size: photo.file.size,
-          type: photo.file.type,
-        };
-
-        return { id: photo.id, file: newObject };
-      });
-
-      formData.set("images", JSON.stringify(images));
       formData.set("reportState", JSON.stringify(state.report));
 
       await fetch("?index", {
@@ -57,6 +60,24 @@ export const saveAsPDF = createAsyncThunk(
       });
     } catch (error) {
       console.error("Error saving pdf:", error);
+    }
+  }
+);
+
+export const syncFromLocalImages = createAsyncThunk(
+  "report/setLocalImages",
+  async (undefined, { dispatch, getState }) => {
+    try {
+      const state = getState() as RootState;
+
+      const storage = new ImageStorage();
+
+      const imageIds = state.report.pages.map((page) => page.imageId);
+      const images = (await storage.loadImagesById(imageIds)) as Image[];
+
+      dispatch(setImages({ images: images }));
+    } catch (error) {
+      console.error("Error getting local images:", error);
     }
   }
 );
@@ -104,6 +125,12 @@ export const reportSlice = createSlice({
         (page) => page.id !== action.payload.pageId
       );
     },
+    setImages: (state, action: PayloadAction<{ images: Image[] }>) => {
+      state.images = action.payload.images;
+    },
+    addImage: (state, action: PayloadAction<{ image: Image }>) => {
+      state.images.push(action.payload.image);
+    },
   },
 });
 
@@ -114,6 +141,8 @@ export const {
   updatePage,
   deletePage,
   syncFromLocalStorage,
+  setImages,
+  addImage,
 } = reportSlice.actions;
 
 export default reportSlice.reducer;

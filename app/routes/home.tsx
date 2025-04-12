@@ -4,8 +4,10 @@ import puppeteer from "puppeteer";
 import { GeneralSettings } from "~/components/general-settings";
 import { Page } from "~/components/page";
 import { useAppDispatch, useAppSelector } from "~/lib/store/store";
-import { syncFromLocalStorage } from "~/lib/store/slices/reportSlice";
-import { PhotoStorage } from "~/lib/photo-storage";
+import {
+  syncFromLocalImages,
+  syncFromLocalStorage,
+} from "~/lib/store/slices/reportSlice";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -62,6 +64,7 @@ export default function Home({ actionData }: Route.ComponentProps) {
 
   useEffect(() => {
     dispatch(syncFromLocalStorage());
+    dispatch(syncFromLocalImages());
   }, [dispatch]);
 
   return (

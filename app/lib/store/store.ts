@@ -10,8 +10,8 @@ export const store = configureStore({
 });
 
 store.subscribe(() => {
-  const state = store.getState();
-  saveState(state.report);
+  const report = store.getState().report;
+  saveState({ ...report, images: [] });
 });
 
 export type RootState = ReturnType<typeof store.getState>;

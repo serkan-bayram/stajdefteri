@@ -1,7 +1,7 @@
 // https://chatgpt.com/share/67f8f9bb-0894-8013-9065-b5a7bb628af3
-export class PhotoStorage {
-  private dbName = "photoStorageDB";
-  private storeName = "photos";
+export class ImageStorage {
+  private dbName = "imageStorageDB";
+  private storeName = "images";
   private dbVersion = 1;
 
   private openDB(): Promise<IDBDatabase> {
@@ -20,12 +20,12 @@ export class PhotoStorage {
     });
   }
 
-  async savePhoto(id: string, file: Blob): Promise<void> {
+  async saveImage(id: string, buffer: string): Promise<void> {
     const db = await this.openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(this.storeName, "readwrite");
       const store = tx.objectStore(this.storeName);
-      store.put({ id, file });
+      store.put({ id, buffer });
 
       tx.oncomplete = () => {
         db.close();
@@ -38,31 +38,7 @@ export class PhotoStorage {
     });
   }
 
-  async loadPhotoURL(id: string): Promise<string | null> {
-    const db = await this.openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(this.storeName, "readonly");
-      const store = tx.objectStore(this.storeName);
-      const request = store.get(id);
-
-      request.onsuccess = () => {
-        const result = request.result;
-        db.close();
-        if (result?.file) {
-          const url = URL.createObjectURL(result.file);
-          resolve(url);
-        } else {
-          resolve(null);
-        }
-      };
-      request.onerror = () => {
-        db.close();
-        reject(request.error);
-      };
-    });
-  }
-
-  async deletePhoto(id: string): Promise<void> {
+  async deleteImage(id: string): Promise<void> {
     const db = await this.openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(this.storeName, "readwrite");
@@ -81,7 +57,7 @@ export class PhotoStorage {
   }
 
   // Yeni fonksiyon: Birden fazla ID'yi kullanarak kayıtları JSON formatında döndürme
-  async loadPhotosByIds(ids: string[]): Promise<any[]> {
+  async loadImagesById(ids: string[]): Promise<any[]> {
     const db = await this.openDB();
     return new Promise((resolve, reject) => {
       const tx = db.transaction(this.storeName, "readonly");

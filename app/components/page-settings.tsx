@@ -1,12 +1,17 @@
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useRef } from "react";
-import { PhotoStorage } from "~/lib/photo-storage";
+import { ImageStorage } from "~/lib/image-storage";
 import { Button } from "./ui/button";
 import type { Page } from "~/lib/types";
 import { useAppDispatch, useAppSelector } from "~/lib/store/store";
-import { deletePage, updatePage } from "~/lib/store/slices/reportSlice";
+import {
+  addImage,
+  deletePage,
+  updatePage,
+} from "~/lib/store/slices/reportSlice";
 import { nanoid } from "@reduxjs/toolkit";
+import { toBase64 } from "~/lib/file-to-base64";
 
 export function PageSettings({ page }: { page: Page }) {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -90,26 +95,26 @@ export function PageSettings({ page }: { page: Page }) {
               accept="image/*"
               onChange={async (e) => {
                 if (!e.target.files) return;
-
                 const { files } = e.target;
 
-                const storage = new PhotoStorage();
+                const storage = new ImageStorage();
+
+                if (page.imageId.length > 0) {
+                  await storage.deleteImage(page.imageId);
+                }
 
                 const photoId = nanoid();
 
-                await storage.savePhoto(photoId, files[0]);
+                const base64 = await toBase64(files[0]);
 
-                const photoURL = await storage.loadPhotoURL(photoId);
+                await storage.saveImage(photoId, base64);
 
-                if (!photoURL) {
-                  console.log("Can't save photo.");
-                  return;
-                }
+                dispatch(addImage({ image: { id: photoId, buffer: base64 } }));
 
                 dispatch(
                   updatePage({
                     pageId: page.id,
-                    update: { image: photoURL, imageId: photoId },
+                    update: { imageId: photoId },
                   })
                 );
               }}
@@ -121,9 +126,9 @@ export function PageSettings({ page }: { page: Page }) {
               variant={"link"}
               className="text-destructive"
               onClick={async () => {
-                const storage = new PhotoStorage();
+                const storage = new ImageStorage();
 
-                await storage.deletePhoto(page.imageId);
+                await storage.deleteImage(page.imageId);
 
                 dispatch(
                   updatePage({
