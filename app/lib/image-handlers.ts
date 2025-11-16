@@ -35,9 +35,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   const browser = await puppeteer.launch({
     headless: true,
-    executablePath: import.meta.env.PROD
-      ? "/usr/bin/chromium-browser"
-      : undefined,
+    executablePath: import.meta.env.PROD ? "/usr/bin/chromium" : undefined,
     args: ["--disable-dev-shm-usage", "--no-sandbox"],
   });
 
