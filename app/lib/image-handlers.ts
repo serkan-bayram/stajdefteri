@@ -47,9 +47,12 @@ export async function action({ request }: Route.ActionArgs) {
 
   const page = await browser.newPage();
 
-  const siteURL = import.meta.env.PROD
-    ? "http://localhost:3000/"
-    : "http://localhost:5173/";
+  const host = request.headers.get("host");
+  const proto =
+    request.headers.get("x-forwarded-proto") ||
+    (request.url.startsWith("https") ? "https" : "http");
+
+  const siteURL = `${proto}://${host}/`;
 
   console.log("Goto: ", siteURL);
 
